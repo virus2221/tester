@@ -42,7 +42,7 @@ def analyze_video(video_path):
         frame_count += 1
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         lsb_frame = np.bitwise_and(gray_frame, 1)
-        unique, counts = np.unique(lsb_frame, return_counts=True)
+        _, counts = np.unique(lsb_frame, return_counts=True)
         results['lsb_distribution'].append(counts.tolist())
 
         if np.any(lsb_frame):
@@ -65,24 +65,31 @@ def analyze_video(video_path):
         expected = np.full_like(observed, np.mean(observed))
         chi_stat, p_value = chisquare(observed, expected)
 
-        results['chi_square']['statistic'] = chi_stat
-        results['chi_square']['p_value'] = p_value
-        results['chi_square']['conclusion'] = "High likelihood of steganography" if p_value < 0.05 else "No significant anomalies"
+        results['chi_square']['statistic'] = float(chi_stat)
+        results['chi_square']['p_value'] = float(p_value)
+        results['chi_square']['conclusion'] = (
+            "High likelihood of steganography" if p_value < 0.05 else "No significant anomalies"
+        )
 
     return results
 
 
 @sstegno_bp.route('/sstegno', methods=['POST'])
 def sstegno_route():
-    # نتوقع JSON فيه مفتاح file_base64
-    data = request.get_json(force=True)
+    if not request.is_json:
+        return jsonify({'error': 'Invalid Content-Type. Must be application/json'}), 400
+
+    try:
+        data = request.get_json(force=True)
+    except Exception as e:
+        return jsonify({'error': 'Malformed JSON'}), 400
+
     if not data or 'file_base64' not in data:
-        return jsonify({'error': 'No file_base64 field found in JSON'}), 400
+        return jsonify({'error': 'Missing "file_base64" field in request'}), 400
 
     file_b64 = data['file_base64']
 
     try:
-        # لو فيها data URI prefix شيلها
         if file_b64.startswith('data:'):
             file_b64 = file_b64.split(',')[1]
 
@@ -98,12 +105,11 @@ def sstegno_route():
             f.write(video_bytes)
 
         results = analyze_video(filepath)
-
         os.remove(filepath)
 
-        return jsonify({'status': 'success', 'results': results})
+        return jsonify({'status': 'success', 'results': results}), 200
 
     except Exception as e:
         if os.path.exists(filepath):
             os.remove(filepath)
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': f'Processing error: {str(e)}'}), 500
