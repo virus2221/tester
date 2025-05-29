@@ -45,6 +45,7 @@ def stegnography_route():
         try:
             file.save(save_path)  # حفظ الصورة على السيرفر
             image = Image.open(save_path)
+            image = image.convert("RGB")
         except:
             return jsonify({
                 "hidden": False,
