@@ -10,5 +10,6 @@ dnspython
 opencv-python-headless
 scipy
 scikit-image
+scikit-learn
 Pillow
 werkzeug
