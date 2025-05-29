@@ -82,7 +82,7 @@ def analyze_url_features(url):
     features.append(sensitive_words_count)
 
     # خصائص غير مفعلة - مؤقتة بقيمة 0
-    features += [0] * 17
+    features += [0] * 19
 
     return features
 
