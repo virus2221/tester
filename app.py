@@ -13,8 +13,10 @@ from features.sstegno import sstegno_bp
 from features.stegnography import stegnography_bp
 from features.urlcheck import urlcheck_bp
 from features.whoise import whoise_bp
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 app.register_blueprint(api_bp)
 app.register_blueprint(blacklist_bp)
