@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from email import message_from_bytes
-
+from flask_cors import CORS
 header_bp = Blueprint('header', __name__)
-
+CORS(header_bp)
 @header_bp.route('/header', methods=['POST'])
 def header_route():
     if 'file' not in request.files:
