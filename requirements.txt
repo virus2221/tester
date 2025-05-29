@@ -1,9 +1,14 @@
 Flask
-requests
-tldextract
+flask-cors
 joblib
 numpy
-scikit-learn
+tldextract
+requests
 pyngrok
 whois
 dnspython
+opencv-python-headless
+scipy
+scikit-image
+Pillow
+werkzeug
