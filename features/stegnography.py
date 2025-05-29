@@ -60,6 +60,7 @@ def stegnography_route():
 
             image_data = base64.b64decode(base64_str)
             image = Image.open(io.BytesIO(image_data))
+            image = image.convert("RGB")
         except:
             return jsonify({
                 "hidden": False,
