@@ -5,7 +5,7 @@ import re
 from urllib.parse import urlparse, parse_qs
 import tldextract
 
-phishing_predict_bp = Blueprint('phishing_predict', __name__)
+phishing_predict_bp = Blueprint('urlcheck', __name__)
 model = load("model.joblib")
 
 def contains_sensitive_words(text):
