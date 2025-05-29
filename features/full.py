@@ -8,9 +8,10 @@ from email.parser import BytesParser
 from email.utils import getaddresses
 import whois
 import tempfile
+from flask_cors import CORS
 
 full_bp = Blueprint('full', __name__)
-
+CORS(full_bp)
 VIRUSTOTAL_API_KEY = "7019e4123a3e38c9ed8f8afd087ace44d8a02cb686b5f0227d60b59d8cc8a3eb"
 
 def check_virustotal_domain(domain):
