@@ -65,7 +65,7 @@ def analyze_url(url):
 
     return features
 
-@phishing_predict_bp.route('/predict', methods=['POST'])
+@phishing_predict_bp.route('/urlcheck', methods=['POST'])
 def predict():
     data = request.get_json()
     url = data.get('url')
