@@ -2,10 +2,11 @@ from flask import Blueprint, request, jsonify
 from PIL import Image
 import io
 import base64
+from flask_cors import CORS
 import os
 
 stegnography_bp = Blueprint('stegnography', __name__)
-
+CORS(stegnography_bp)
 def extract_message_from_image(image):
     width, height = image.size
     bits = ""
