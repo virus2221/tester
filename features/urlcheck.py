@@ -11,7 +11,7 @@ import time
 urlcheck_bp = Blueprint('urlcheck', __name__)
 
 # تحميل النموذج مرة واحدة عند استيراد الـ blueprint
-model = load("D:/features/model.joblib")
+model = load("features/model.joblib")
 
 API_KEY = "80622f5e7e38f3b81381aec0be8aa528bf6186411b8dfa92fe9d8084a89b3ddd"
 
