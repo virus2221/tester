@@ -5,7 +5,7 @@ numpy
 tldextract
 requests
 pyngrok
-whois
+python-whois
 dnspython
 opencv-python-headless
 scipy
