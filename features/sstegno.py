@@ -6,11 +6,12 @@ import scipy.fftpack as fftpack
 from skimage.measure import shannon_entropy
 import os
 import uuid
+from flask_cors import CORS
 import base64
 from werkzeug.utils import secure_filename
 
 sstegno_bp = Blueprint('sstegno', __name__)
-
+CORS(sstegno_bp)
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov', 'mkv'}
 
