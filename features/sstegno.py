@@ -76,38 +76,40 @@ def analyze_video(video_path):
 
 @sstegno_bp.route('/sstegno', methods=['POST'])
 def sstegno_route():
-    if not request.is_json:
-        return jsonify({'error': 'Invalid Content-Type. Must be application/json'}), 400
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part in the request'}), 400
 
-    try:
-        data = request.get_json(force=True)
-    except Exception as e:
-        return jsonify({'error': 'Malformed JSON'}), 400
+    file = request.files['file']
 
-    if not data or 'file_base64' not in data:
-        return jsonify({'error': 'Missing "file_base64" field in request'}), 400
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
 
-    file_b64 = data['file_base64']
-
-    try:
-        if file_b64.startswith('data:'):
-            file_b64 = file_b64.split(',')[1]
-
-        video_bytes = base64.b64decode(file_b64)
-    except Exception as e:
-        return jsonify({'error': 'Invalid base64 encoding'}), 400
+    if not allowed_extension(file.filename):
+        return jsonify({'error': 'Unsupported file type'}), 400
 
     filename = secure_filename(f"{uuid.uuid4().hex}.mp4")
     filepath = os.path.join(UPLOAD_FOLDER, filename)
 
     try:
-        with open(filepath, 'wb') as f:
-            f.write(video_bytes)
+        # Save uploaded file
+        file.save(filepath)
 
+        # Convert video to base64 (optional)
+        with open(filepath, 'rb') as f:
+            video_bytes = f.read()
+            video_base64 = base64.b64encode(video_bytes).decode('utf-8')
+
+        # Analyze video
         results = analyze_video(filepath)
+
+        # Remove temporary file
         os.remove(filepath)
 
-        return jsonify({'status': 'success', 'results': results}), 200
+        return jsonify({
+            'status': 'success',
+            'results': results,
+            'video_base64': video_base64  # Return base64 string if needed
+        }), 200
 
     except Exception as e:
         if os.path.exists(filepath):
